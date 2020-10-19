@@ -1,0 +1,10 @@
+.idea/
+coverage/
+dist/
+node_modules/
+
+.env
+.coveralls.yml
+
+graphql.schema.json
+graphql.schema.graphql

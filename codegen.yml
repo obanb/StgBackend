@@ -1,0 +1,20 @@
+schema:
+  - "graphql.schema.json"
+documents: []
+config:
+  noNamespaces: true
+generates:
+  ./lib/index.ts:
+    config:
+      noNamespaces: true
+      namingConvention:
+        default: change-case#pascalCase
+        enumValues: change-case#upperCase
+    plugins:
+      - "typescript-common"
+      - "typescript-client"
+      - "typescript-server"
+  ./lib/fragmentTypes.json:
+    plugins:
+      - "fragment-matcher"
+require: []

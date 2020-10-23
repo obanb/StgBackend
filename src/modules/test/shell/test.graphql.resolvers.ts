@@ -1,6 +1,6 @@
 import {testService} from '../core/testService';
 
-export const TestGraphqlResolvers = {
+export const testGraphqlResolvers = {
     Queries: {
         test: () => ({
             test: () => testService().test(),

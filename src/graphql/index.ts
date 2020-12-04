@@ -3,8 +3,8 @@ import {addResolveFunctionsToSchema, makeExecutableSchema} from 'graphql-schema-
 import {importSchema} from 'graphql-import';
 import {testGraphqlResolvers} from '../modules/test/shell/test.graphql.resolvers';
 
-// const graphQlSchemaFile: string = 'node_modules\\StgGraphql\\graphql.schema.graphql';
-const graphQlSchemaFile: string = '/home/archie/Plocha/dev/StgBackend/node_modules/StgGraphql/graphql.schema.graphql';
+const graphQlSchemaFile: string = 'node_modules\\StgGraphql\\graphql.schema.graphql';
+// const graphQlSchemaFile: string = '/home/archie/Plocha/dev/StgBackend/node_modules/StgGraphql/graphql.schema.graphql';
 
 const resolvers: any = {
     Query: {

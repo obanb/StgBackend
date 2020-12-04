@@ -5,6 +5,7 @@ import {Context} from 'apollo-server-core';
 import {createApolloServer} from './createApolloServer';
 import {factory, logger} from '../modules/common/logger';
 import * as SocketIO from 'socket.io';
+import {getRes} from '../modules/parser';
 
 const GRAPHQL_URL_PATH = '/graphql';
 
@@ -41,6 +42,11 @@ export const server = {
         });
         app.options('*', (req, res) => {
             res.send('');
+        });
+
+        app.get('/report', async(_, res) => {
+            const report = await getRes()
+            res.send(report);
         });
 
         // app.use('/graphql', verify);

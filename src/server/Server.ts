@@ -1,13 +1,7 @@
 import * as bodyParser from 'body-parser';
-import {schema} from '../graphql';
 import * as express from 'express';
-import {Context} from 'apollo-server-core';
-import {createApolloServer} from './createApolloServer';
 import {factory, logger} from '../modules/common/logger';
-import * as SocketIO from 'socket.io';
 import {getRes} from '../modules/parser';
-
-const GRAPHQL_URL_PATH = '/graphql';
 
 const log = logger(factory.getLogger('server'));
 
@@ -16,7 +10,7 @@ export interface ExpressConfig {
 }
 
 let app: express.Express;
-export let io: SocketIO.Server;
+
 
 export const server = {
     run: async ({devMode}: ExpressConfig) => {
@@ -51,17 +45,10 @@ export const server = {
 
         // app.use('/graphql', verify);
 
-        const apolloServer = createApolloServer({
-            schema,
-            debug: devMode,
-            createContextFn: async (_: Context<any>) => ({}),
-        });
-        apolloServer.applyMiddleware({app, path: GRAPHQL_URL_PATH});
-
         const PORT = process.env.PORT || 8080;
         const expressServer = app.listen(PORT, async () => {
             log.info(`server ready on port ${PORT}`)();
         });
-        io = SocketIO(expressServer);
+
     },
 };

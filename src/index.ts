@@ -1,4 +1,3 @@
-import {database} from './server/database';
 import {ExpressConfig, server} from './server/Server';
 import {pipe} from '../node_modules/fp-ts/lib/pipeable';
 import {factory, logger} from './modules/common/logger';
@@ -28,15 +27,6 @@ const main = () =>
 //  Start server
 // ---------------------------------------------------------------------------------------------------
 const startServer = async () => {
-    const conn = await database.start();
-    log.info(
-        `DB: ` +
-            JSON.stringify({
-                dbName: conn.db.databaseName,
-                test: conn.db.options,
-            }),
-    )();
-
     const cfg: ExpressConfig = {
         devMode: DEV_MODE,
     };

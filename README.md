@@ -1,15 +1,23 @@
-example technology NodeJS backend project
+#todo
 
-what is here
+dokumentace service
+dokumentace api
+generatory
 
-TypeScript functional programming
+rest api
+hyper ts
 
-FP-TS 
+mongo service
+parser service
 
-some useful NodeJS practices
+envs
 
-MongoDB 
-Mongoose ORM 
-JWT token auth
-Graphql Apollo server
-REST API router
+issue creations/list/download
+
+auth
+users
+
+mongo bucket
+
+advanced aggregations
+

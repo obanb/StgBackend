@@ -2,9 +2,7 @@ import {pipe} from 'fp-ts/pipeable';
 import {ApiError, coreError, DatabaseError, databaseError} from '../modules/errors';
 import * as E from 'fp-ts/lib/Either';
 import {constVoid} from 'fp-ts/function';
-
-const errorScenario = 'ERROR scenario';
-const okScenario = 'OK scenario';
+import {errorScenario, okScenario} from './utilts';
 
 describe('Test of retry util', () => {
     it(`should test union coreError json structure [${okScenario}]`, async () => {

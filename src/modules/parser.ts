@@ -3,6 +3,7 @@ import * as TE from 'fp-ts/lib/TaskEither';
 import * as E from 'fp-ts/lib/Either';
 import {pipe} from '../../node_modules/fp-ts/lib/pipeable';
 import * as XLSX from 'xlsx';
+import {getConnectedClient, getDatabase} from './mongoExternal';
 
 interface HeaderLine {
     header: string;
@@ -54,15 +55,6 @@ const executeQuery = (input: QueryInput) => async (database: Db) => {
     const result = await cursor.toArray();
     return result;
 };
-
-const getConnectedClient = (uri: string, options?: MongoClientOptions) =>
-    TE.tryCatch<DatabaseError, MongoClient>(async () => MongoClient.connect(uri, options), databaseError(`Get database client error.`));
-
-const getDatabase = (name?: string) => (client: MongoClient) =>
-    TE.tryCatch<DatabaseError, Db>(async () => client.db(name ? name : undefined), databaseError(`Get database ${name} error.`));
-
-const getCollection = (name: string) => (database: Db) =>
-    E.tryCatch<DatabaseError, Collection<any>>(() => database.collection(name), databaseError(`Get database collection ${name} error.`));
 
 const res = () => pipe(getConnectedClient(uri, {useNewUrlParser: true}), TE.chain(getDatabase()), TE.map(executeQuery(fakeInput)));
 

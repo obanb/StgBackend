@@ -7,7 +7,7 @@ export const getConnectedClient = (uri: string, options?: MongoClientOptions) =>
     TE.tryCatch<DatabaseError, MongoClient>(async () => MongoClient.connect(uri, options), createDatabaseError(`Get database client error.`));
 
 export const getDatabase = (name?: string) => (client: MongoClient) =>
-    TE.tryCatch<DatabaseError, Db>(async () => client.db(name ? name : undefined), createDatabaseError(`Get database ${name} error.`));
+    TE.tryCatch<DatabaseError, Db>(async () => client.db(name ? name : null), createDatabaseError(`Get database ${name} error.`));
 
 export const getCollection = (name: string) => (database: Db) =>
     E.tryCatch<DatabaseError, Collection<any>>(() => database.collection(name), createDatabaseError(`Get database collection ${name} error.`));

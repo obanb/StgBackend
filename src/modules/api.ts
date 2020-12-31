@@ -1,0 +1,50 @@
+import * as express from 'express';
+import {pipe} from 'fp-ts/pipeable';
+import * as H from 'hyper-ts';
+import * as t from 'io-ts';
+import {toRequestHandler} from 'hyper-ts/lib/express';
+import * as E from 'fp-ts/lib/Either';
+import {failure} from 'io-ts/lib/PathReporter';
+
+const router = express.Router();
+
+export const XlsxHeaderLine = t.interface({
+    header: t.string,
+    property: t.string,
+});
+
+export const MongoQueryInput = t.interface({
+    query: t.unknown,
+    collection: t.string,
+    projection: t.interface({
+        type: t.string,
+        list: t.array(XlsxHeaderLine),
+    }),
+    config: t.interface({
+        allowEmpty: t.boolean,
+    }),
+});
+
+function badRequest(message: Error): H.Middleware<H.StatusOpen, H.ResponseEnded, never, void> {
+    return pipe(
+        H.status(H.Status.BadRequest),
+        H.ichain(() => H.closeHeaders()),
+        H.ichain(() => H.send(message.message)),
+    );
+}
+
+const paramDecode = pipe(
+    H.decodeBody(MongoQueryInput.decode),
+    H.mapLeft((e) => new Error(failure(e).join('\n'))),
+    H.ichain((body) =>
+        pipe(
+            H.status<Error>(H.Status.OK),
+            H.ichain(() => H.json(body, E.toError)),
+        ),
+    ),
+    H.orElse(badRequest),
+);
+
+router.route('/mongoquery').post(toRequestHandler(paramDecode));
+
+export {router};

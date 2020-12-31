@@ -2,6 +2,7 @@ import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import {factory, logger} from '../modules/common/logger';
 import {getRes} from '../modules/parser';
+import {router} from '../modules/api';
 
 const log = logger(factory.getLogger('server'));
 
@@ -37,6 +38,8 @@ export const server = {
         app.options('*', (req, res) => {
             res.send('');
         });
+
+        app.use('/api', router);
 
         app.get('/report', async(_, res) => {
             const report = await getRes()

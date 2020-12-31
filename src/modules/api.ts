@@ -33,6 +33,15 @@ function badRequest(message: Error): H.Middleware<H.StatusOpen, H.ResponseEnded,
     );
 }
 
+type WithErrorRequest = typeof H.Status.BadRequest | typeof H.Status.BadGateway | typeof H.Status.InternalServerError;
+
+const withErrorCode = (status: WithErrorRequest) => (message: Error) =>
+    pipe(
+        H.status(status),
+        H.ichain(() => H.closeHeaders()),
+        H.ichain(() => H.send(message.message)),
+    );
+
 const paramDecode = pipe(
     H.decodeBody(MongoQueryInput.decode),
     H.mapLeft((e) => new Error(failure(e).join('\n'))),
@@ -42,7 +51,7 @@ const paramDecode = pipe(
             H.ichain(() => H.json(body, E.toError)),
         ),
     ),
-    H.orElse(badRequest),
+    H.orElse(withErrorCode(H.Status.BadRequest)),
 );
 
 router.route('/mongoquery').post(toRequestHandler(paramDecode));

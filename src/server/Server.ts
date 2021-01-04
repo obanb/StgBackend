@@ -1,8 +1,13 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import {factory, logger} from '../modules/common/logger';
-import {getRes} from '../modules/parser';
 import {router} from '../modules/api';
+import {MongoClient} from 'mongodb';
+import {connectClient, databaseUri} from './connection';
+import * as TE from 'fp-ts/TaskEither';
+import * as E from 'fp-ts/Either';
+import {DatabaseError} from '../modules/errors';
+import {pipe} from 'fp-ts/function';
 
 const log = logger(factory.getLogger('server'));
 
@@ -11,10 +16,10 @@ export interface ExpressConfig {
 }
 
 let app: express.Express;
-
+let dbClient: E.Either<DatabaseError, MongoClient>;
 
 export const server = {
-    run: async ({devMode}: ExpressConfig) => {
+    run: async ({}: ExpressConfig) => {
         app = express();
 
         app.use(bodyParser.json({limit: '1mb'}));
@@ -41,17 +46,21 @@ export const server = {
 
         app.use('/api', router);
 
-        app.get('/report', async(_, res) => {
-            const report = await getRes()
-            res.send(report);
-        });
-
-        // app.use('/graphql', verify);
-
         const PORT = process.env.PORT || 8080;
-        const expressServer = app.listen(PORT, async () => {
+        app.listen(PORT, async () => {
             log.info(`server ready on port ${PORT}`)();
+            dbClient = await pipe(
+                connectClient(databaseUri, {useUnifiedTopology: true}),
+                TE.map((client) => {
+                    log.info('database client connected')();
+                    return client;
+                }),
+                TE.mapLeft((err) => {
+                    log.error(err.errorMessage)();
+                    log.error(JSON.stringify(err.rawError))();
+                    return err;
+                }),
+            )();
         });
-
     },
 };

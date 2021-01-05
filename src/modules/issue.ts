@@ -1,4 +1,5 @@
 import * as t from 'io-ts';
+import {ObjectID} from 'mongodb';
 
 export const issueName = t.brand(
     t.string,
@@ -26,10 +27,16 @@ export const issueDesc = t.brand(
     'issueDesc',
 );
 
-export const issue = t.interface({
-    _tag: t.literal('issue'),
+export const issueRaw = t.interface({
+    _tag: t.literal('issueRaw'),
     name: issueName,
     desc: issueDesc,
 });
 
-export type Issue = t.TypeOf<typeof issue>;
+export const issuePopulated = t.interface({
+    _tag: t.literal('issuePopulated'),
+    name: issueName,
+    desc: issueDesc,
+});
+
+export type IssueRaw = t.TypeOf<typeof issueRaw> & {owner: ObjectID};

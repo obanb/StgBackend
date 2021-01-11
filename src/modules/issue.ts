@@ -27,8 +27,16 @@ export const issueDesc = t.brand(
     'issueDesc',
 );
 
+const objectId = new t.Type<ObjectID, ObjectID, any>(
+    'objectId',
+    (input: any): input is ObjectID => ObjectID.isValid(input),
+    (input, context) => ( ObjectID.isValid(input) ? t.success(input) : t.failure(input, context)),
+    t.identity
+)
+
 export const issueRaw = t.interface({
     _tag: t.literal('issueRaw'),
+    _id: objectId,
     name: issueName,
     desc: issueDesc,
 });
@@ -39,4 +47,4 @@ export const issuePopulated = t.interface({
     desc: issueDesc,
 });
 
-export type IssueRaw = t.TypeOf<typeof issueRaw> & {owner: ObjectID};
+

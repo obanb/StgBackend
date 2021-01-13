@@ -56,7 +56,7 @@ const executeQuery = (input: QueryInput) => async (database: Db) => {
     return result;
 };
 
-const res = () => pipe(getConnectedClient(uri, {useNewUrlParser: true}), TE.chain(getDatabase()), TE.map(executeQuery(fakeInput)));
+const res = () => pipe(getConnectedClient(uri), TE.chain(getDatabase()), TE.map(executeQuery(fakeInput)));
 
 interface DatabaseError {
     type: 'DatabaseError';
@@ -84,7 +84,7 @@ export const xlsxTemplate = async (headerLine: HeaderLine[]) => {
 };
 
 export const generateXlsx = () => async (): Promise<any> => {
-    let template: any = null;
+    const template: any = null;
 
     // název záložky v .xlsx
     const wsName = 'Sestava';

@@ -43,8 +43,10 @@ export const issueRaw = t.interface({
 
 export const issuePopulated = t.interface({
     _tag: t.literal('issuePopulated'),
+    _id: objectId,
     name: issueName,
     desc: issueDesc,
 });
+
 
 

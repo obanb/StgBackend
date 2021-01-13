@@ -8,17 +8,17 @@ import {failure} from 'io-ts/lib/PathReporter';
 
 const router = express.Router();
 
-export const XlsxHeaderLine = t.interface({
+export const xlsxHeaderLine = t.interface({
     header: t.string,
     property: t.string,
 });
 
-export const MongoQueryInput = t.interface({
+export const mongoQueryInput = t.interface({
     query: t.unknown,
     collection: t.string,
     projection: t.interface({
         type: t.string,
-        list: t.array(XlsxHeaderLine),
+        list: t.array(xlsxHeaderLine),
     }),
     config: t.interface({
         allowEmpty: t.boolean,
@@ -43,7 +43,7 @@ const withErrorCode = (status: WithErrorRequest) => (message: Error) =>
     );
 
 const paramDecode = pipe(
-    H.decodeBody(MongoQueryInput.decode),
+    H.decodeBody(mongoQueryInput.decode),
     H.mapLeft((e) => new Error(failure(e).join('\n'))),
     H.ichain((body) =>
         pipe(
